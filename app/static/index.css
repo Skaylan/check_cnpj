@@ -21,6 +21,16 @@ main{
 
 }
 
+.title{
+    width: 100vw;
+    /* height: 10vh; */
+    margin-top: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .input{
     display: flex;
     align-items: center;
