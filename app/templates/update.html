@@ -1,0 +1,22 @@
+<div id="display">
+    <table class="table">
+        <thead>
+            <tr>
+             <th>CNPJ</th>
+             <th>Razão Social</th>
+             <th>Nome Fantasia</th>
+             <th>Situação Cadastral</th>
+             <th>Inicio das atividades</th>
+            </tr>
+        </thead>
+        <tbody>
+              <tr>
+                    <td data-label="CNPJ">{{ data['cnpj'] }}</td>
+                    <td data-label="Razão Social">{{ data['razao_social'] }}</td>
+                    <td data-label="Nome Fantasia">{{ data['nome_fantasia'] }}</td>
+                    <td data-label="Situação Cadastral">{{ data['descricao_situacao_cadastral'] }}</td>
+                    <td data-label="Inicio das atividades">{{ data['data_inicio_atividade'] }}</td>
+              </tr>
+        </tbody>
+      </table>
+</div>
