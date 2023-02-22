@@ -1,84 +1,75 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import React, { useState } from 'react'
+import { validateInput } from '../components/validateInput'
+import { DisplayCompanyInfo } from '../components/DisplayCompanyInfo'
+import { DisplayError } from '../components/DisplayError'
+import { SaveFile } from '../components/SaveFile'
+import { DisplayPlaceHolder } from '../components/DisplayPlaceHolder'
+import { Footer } from '../components/Footer'
+import { SpinLoader } from '../components/SpinLoader'
+import { Header } from '../components/Header'
+
 
 const Home: NextPage = () => {
+
+  const [inputValue, setInputValue] = useState('')
+  const [wasSearched, setWasSearched] = useState(false)
+  const [isFetchResultOk, setIsFetchResultOk] = useState(true)
+  const [isFetching, setIsFetching] = useState(false)
+  const [data, setData] = useState<any>({})
+
+  function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    let newInputValue = e.target.value.replaceAll(".", "")
+    newInputValue = newInputValue.replaceAll("/", "")
+    newInputValue = newInputValue.replaceAll("-", "")
+    setInputValue(newInputValue)
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (validateInput.test(inputValue)) {
+      setIsFetching(true)
+      // await new Promise(r => setTimeout(r, 2000));
+      await fetch(`https://brasilapi.com.br/api/cnpj/v1/${inputValue}`).then(res => {
+        return res.json()
+      }).then(data => {
+        if (data.name === 'NotFoundError') {
+          setIsFetchResultOk(false)
+        } else {
+          setIsFetchResultOk(true)
+          setWasSearched(true)
+
+          if (data.opcao_pelo_simples === true) {
+            data.opcao_pelo_simples = 'SIM'
+          }
+
+          setIsFetching(false)
+          setData(data)
+        }
+      }).catch(error => {
+        console.log('ERROR >>>>>>', error)
+      })
+    } else {
+      alert('Valor invalido')
+    }
+    
+  }
+  
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="flex flex-col min-h-[100vh] bg-[#33415c]">
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Obtenha informações completas de impresas apartir do cnpj!</title>
       </Head>
-
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="rounded-md bg-gray-100 p-3 font-mono text-lg">
-            pages/index.tsx
-          </code>
-        </p>
-
-        <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and its API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex h-24 w-full items-center justify-center border-t">
-        <a
-          className="flex items-center justify-center gap-2"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </a>
-      </footer>
+      <Header/>
+      <div className="w-[100%] h-[120px] flex items-end justify-center">
+        <form className='flex flex-wrap gap-3 justify-center' onSubmit={handleSubmit}>
+          <input onChange={handleInput} value={inputValue} required className='w-[300px] h-[40px] rounded text-2xl p-2' type="text" placeholder='Digite o CNPJ' maxLength={18} minLength={14} />
+          <button className='w-[200px] h-[40px] bg-[#3581e4] rounded text-xl hover:bg-[#5c9cf0] hover:text-white'>Buscar</button>
+        </form>
+      </div>
+      {isFetching ? <SpinLoader /> : isFetchResultOk ? wasSearched ? <div className='flex flex-col items-center'><DisplayCompanyInfo {...data} /> <SaveFile {...data} /></div> : <DisplayPlaceHolder /> : <DisplayError />}
+      <Footer />
     </div>
   )
 }
