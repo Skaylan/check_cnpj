@@ -1,5 +1,3 @@
-
-
 export const Info = ({title, value}: any) => {
     return(
         <div>
