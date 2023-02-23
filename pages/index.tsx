@@ -30,7 +30,6 @@ const Home: NextPage = () => {
     e.preventDefault()
     if (validateInput.test(inputValue)) {
       setIsFetching(true)
-      // await new Promise(r => setTimeout(r, 2000));
       await fetch(`https://brasilapi.com.br/api/cnpj/v1/${inputValue}`).then(res => {
         return res.json()
       }).then(data => {

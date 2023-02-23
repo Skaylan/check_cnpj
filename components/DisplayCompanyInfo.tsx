@@ -40,5 +40,3 @@ export const DisplayCompanyInfo = (props: any) => {
       </div>
     );
 }
-
-{/* <Info title={''} value={} /> */}

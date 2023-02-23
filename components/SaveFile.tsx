@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const { saveAs } = require('file-saver');
 
 export const SaveFile = (props: any) => {
