@@ -13,7 +13,7 @@ git clone https://github.com/Skaylan/check_cnpj.git
 npm install
 
 ```
-### finaly run the file run.py:
+### finaly run the project:
 
 ```
 npm run dev
