@@ -2,8 +2,6 @@ const { saveAs } = require('file-saver');
 
 export const SaveFile = (props: any) => {
 
-  console.log(props)
-
   function handleSaveFile() {
     const fileName = "dados.json";
     let file = new Blob([JSON.stringify(props)], { type: "application/json" });

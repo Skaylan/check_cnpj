@@ -33,7 +33,6 @@ const Home: NextPage = () => {
       await fetch(`https://brasilapi.com.br/api/cnpj/v1/${inputValue}`).then(res => {
         return res.json()
       }).then(data => {
-        console.log('DATA >>>', data)
         if (data.name === 'NotFoundError' || data.name === 'BadRequestError') {
           setIsFetchResultOk(false)
           setIsFetching(false)
