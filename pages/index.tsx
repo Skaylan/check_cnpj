@@ -33,8 +33,10 @@ const Home: NextPage = () => {
       await fetch(`https://brasilapi.com.br/api/cnpj/v1/${inputValue}`).then(res => {
         return res.json()
       }).then(data => {
-        if (data.name === 'NotFoundError') {
+        console.log('DATA >>>', data)
+        if (data.name === 'NotFoundError' || data.name === 'BadRequestError') {
           setIsFetchResultOk(false)
+          setIsFetching(false)
         } else {
           setIsFetchResultOk(true)
           setWasSearched(true)
@@ -58,19 +60,47 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col min-h-[100vh] bg-[#33415c]">
       <Head>
-        <title>Obtenha informações completas de impresas apartir do cnpj!</title>
+        <title>
+          Obtenha informações completas de impresas apartir do cnpj!
+        </title>
       </Head>
-      <Header/>
+      <Header />
       <div className="w-[100%] h-[120px] flex items-end justify-center">
-        <form className='flex flex-wrap gap-3 justify-center' onSubmit={handleSubmit}>
-          <input onChange={handleInput} value={inputValue} required className='w-[300px] h-[40px] rounded text-2xl p-2' type="text" placeholder='Digite o CNPJ' maxLength={18} minLength={14} />
-          <button className='w-[200px] h-[40px] bg-[#3581e4] rounded text-xl hover:bg-[#5c9cf0] hover:text-white'>Buscar</button>
+        <form
+          className="flex flex-wrap gap-3 justify-center"
+          onSubmit={handleSubmit}
+        >
+          <input
+            onChange={handleInput}
+            value={inputValue}
+            required
+            className="w-[300px] h-[40px] rounded text-2xl p-2"
+            type="text"
+            placeholder="Digite o CNPJ"
+            maxLength={18}
+            minLength={14}
+          />
+          <button className="w-[200px] h-[40px] bg-[#3581e4] rounded text-xl hover:bg-[#5c9cf0] hover:text-white">
+            Buscar
+          </button>
         </form>
       </div>
-      {isFetching ? <SpinLoader /> : isFetchResultOk ? wasSearched ? <div className='flex flex-col items-center'><DisplayCompanyInfo {...data} /> <SaveFile {...data} /></div> : <DisplayPlaceHolder /> : <DisplayError />}
+      {isFetching ? (
+        <SpinLoader />
+      ) : isFetchResultOk ? (
+        wasSearched ? (
+          <div className="flex flex-col items-center">
+            <DisplayCompanyInfo {...data} /> <SaveFile {...data} />
+          </div>
+        ) : (
+          <DisplayPlaceHolder />
+        )
+      ) : (
+        <DisplayError />
+      )}
       <Footer />
     </div>
-  )
+  );
 }
 
 export default Home
