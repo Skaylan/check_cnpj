@@ -30,9 +30,9 @@ const Home: NextPage = () => {
     e.preventDefault()
     if (validateInput.test(inputValue)) {
       setIsFetching(true)
-      await fetch(`https://brasilapi.com.br/api/cnpj/v1/${inputValue}`).then(res => {
-        return res.json()
-      }).then(data => {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}${inputValue}`)
+      .then(res => res.json())
+      .then(data => {
         if (data.name === 'NotFoundError' || data.name === 'BadRequestError') {
           setIsFetchResultOk(false)
           setIsFetching(false)
@@ -47,7 +47,8 @@ const Home: NextPage = () => {
           setIsFetching(false)
           setData(data)
         }
-      }).catch(error => {
+      })
+      .catch(error => {
         console.log('ERROR >>>>>>', error)
       })
     } else {
