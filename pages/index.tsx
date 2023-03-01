@@ -49,6 +49,7 @@ const Home: NextPage = () => {
         }
       })
       .catch(error => {
+        setIsFetching(false)
         console.log('ERROR >>>>>>', error)
       })
     } else {
